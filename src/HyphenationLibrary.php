@@ -11,8 +11,8 @@
 
 namespace BitAndBlack\Hyphenizer\Sdk;
 
-use BitAndBlack\Hyphenizer\Sdk\Util\FileInterface;
 use BitAndBlack\Hyphenizer\Sdk\Util\File;
+use BitAndBlack\Hyphenizer\Sdk\Util\FileInterface;
 use BitAndBlack\Hyphenizer\Sdk\Util\Path;
 use BitAndBlack\Hyphenizer\Sdk\Util\PathInterface;
 use Closure;

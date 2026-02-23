@@ -11,7 +11,6 @@
 
 namespace BitAndBlack\Hyphenizer\Sdk\Api;
 
-use BitAndBlack\Hyphenizer\Sdk\Api\PayloadInterface;
 use Fig\Http\Message\StatusCodeInterface;
 use JsonSerializable;
 
@@ -20,7 +19,6 @@ readonly class Response implements JsonSerializable
     /**
      * @param int<100, 599> $statusCode
      * @param array<int, string> $messages
-     * @param PayloadInterface|null $payload
      */
     public function __construct(
         private int $statusCode = StatusCodeInterface::STATUS_OK,

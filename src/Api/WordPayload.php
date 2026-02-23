@@ -11,8 +11,6 @@
 
 namespace BitAndBlack\Hyphenizer\Sdk\Api;
 
-use BitAndBlack\Hyphenizer\Sdk\Api\PayloadInterface;
-use BitAndBlack\Hyphenizer\Sdk\Api\Word;
 use JsonSerializable;
 
 readonly class WordPayload implements PayloadInterface, JsonSerializable

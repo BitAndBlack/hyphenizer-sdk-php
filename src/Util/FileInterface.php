@@ -11,6 +11,7 @@
 
 namespace BitAndBlack\Hyphenizer\Sdk\Util;
 
-interface FileInterface {
+interface FileInterface
+{
     public function getWordsHyphenatedJsonFile(): string;
 }

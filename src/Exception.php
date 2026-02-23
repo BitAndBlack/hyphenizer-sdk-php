@@ -11,4 +11,6 @@
 
 namespace BitAndBlack\Hyphenizer\Sdk;
 
-class Exception extends \Exception {}
+class Exception extends \Exception
+{
+}

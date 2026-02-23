@@ -16,10 +16,7 @@ use JsonSerializable;
 readonly class Word implements JsonSerializable
 {
     /**
-     * @param string $hyphenation
      * @param int<0, 100> $score
-     * @param bool $isApproved
-     * @param bool $hasTypo
      */
     public function __construct(
         private string $hyphenation,
