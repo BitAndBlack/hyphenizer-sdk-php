@@ -59,12 +59,11 @@ class HyphenationLibrary implements LoggerAwareInterface
     ) {
         $this->logger = new NullLogger();
 
-        $this->filesystem = new Filesystem(
-            $filesystemAdapter
-            ?? new LocalFilesystemAdapter(
-                $path->getLibraryFolder()
-            )
+        $adapter = $filesystemAdapter ?? new LocalFilesystemAdapter(
+            $path->getLibraryFolder()
         );
+
+        $this->filesystem = new Filesystem($adapter);
 
         $this->callbackFileReadAfter = static fn (string $content): string => $content;
         $this->callbackFileWriteBefore = static fn (string $content): string => $content;

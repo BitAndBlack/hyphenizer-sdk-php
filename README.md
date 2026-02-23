@@ -1,1 +1,1 @@
-# hyphenizer-sdk-php
+# Bit&Black Hyphenizer SDK for PHP

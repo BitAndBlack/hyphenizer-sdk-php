@@ -23,7 +23,7 @@ readonly class WordResponse implements ResponseInterface, JsonSerializable
     public function __construct(
         private int $statusCode = StatusCodeInterface::STATUS_OK,
         private array $messages = [],
-        private WordPayload|null $payload = null,
+        private WordPayload|null $wordPayload = null,
     ) {
     }
 
@@ -61,6 +61,6 @@ readonly class WordResponse implements ResponseInterface, JsonSerializable
 
     public function getPayload(): WordPayload|null
     {
-        return $this->payload;
+        return $this->wordPayload;
     }
 }

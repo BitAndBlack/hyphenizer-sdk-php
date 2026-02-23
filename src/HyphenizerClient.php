@@ -11,7 +11,9 @@
 
 namespace BitAndBlack\Hyphenizer\Sdk;
 
+use BitAndBlack\Hyphenizer\Sdk\Api\WordPayload;
 use BitAndBlack\Hyphenizer\Sdk\Api\WordResponse;
+use BitAndBlack\Hyphenizer\Sdk\Api\WordsPayload;
 use BitAndBlack\Hyphenizer\Sdk\Api\WordsResponse;
 use CuyZ\Valinor\Mapper\Source\Source;
 use CuyZ\Valinor\MapperBuilder;
@@ -28,11 +30,7 @@ use Throwable;
 
 class HyphenizerClient implements LoggerAwareInterface
 {
-    private int $minScoreRequired;
-
-    private HttpMethodsClientInterface $httpMethodsClient;
-
-    private string $token;
+    private readonly HttpMethodsClientInterface $httpMethodsClient;
 
     /**
      * @var array<int, string>
@@ -44,8 +42,8 @@ class HyphenizerClient implements LoggerAwareInterface
     private LoggerInterface $logger;
 
     public function __construct(
-        string $token,
-        int $minScoreRequired = 50,
+        private readonly string $token,
+        private readonly int $minScoreRequired = 50,
         ?string $hyphenizerUrl = null
     ) {
         $this->httpMethodsClient = new HttpMethodsClient(
@@ -53,15 +51,11 @@ class HyphenizerClient implements LoggerAwareInterface
             Psr17FactoryDiscovery::findRequestFactory(),
             Psr17FactoryDiscovery::findStreamFactory(),
         );
-        $this->token = $token;
-        $this->minScoreRequired = $minScoreRequired;
         $this->hyphenizerUrl = $hyphenizerUrl ?? $this->hyphenizerUrl;
         $this->logger = new NullLogger();
     }
 
     /**
-     * @param string $word
-     * @return WordResponse
      * @throws Exception
      */
     public function getSingleWordRequest(string $word): WordResponse
@@ -72,8 +66,8 @@ class HyphenizerClient implements LoggerAwareInterface
 
         try {
             $response = $this->httpMethodsClient->get($this->hyphenizerUrl . '/v2/words/' . $word, $headers);
-        } catch (HttpClientException $exception) {
-            throw new Exception('Failed to request Hyphenizer API.', 0, $exception);
+        } catch (HttpClientException $httpClientException) {
+            throw new Exception('Failed to request Hyphenizer API.', 0, $httpClientException);
         }
 
         $contents = $response->getBody()->getContents();
@@ -93,7 +87,6 @@ class HyphenizerClient implements LoggerAwareInterface
 
     /**
      * @param array<int, string> $words
-     * @return WordsResponse
      * @throws Exception
      */
     public function getMultipleWordsRequest(array $words): WordsResponse
@@ -108,8 +101,8 @@ class HyphenizerClient implements LoggerAwareInterface
 
         try {
             $response = $this->httpMethodsClient->post($this->hyphenizerUrl . '/v2/multiple-words', $headers, $body);
-        } catch (HttpClientException $exception) {
-            throw new Exception('Failed to request Hyphenizer API.', 0, $exception);
+        } catch (HttpClientException $httpClientException) {
+            throw new Exception('Failed to request Hyphenizer API.', 0, $httpClientException);
         }
 
         $contents = $response->getBody()->getContents();
@@ -147,7 +140,7 @@ class HyphenizerClient implements LoggerAwareInterface
 
         $payload = $singleWordRequest->getPayload();
 
-        if (null === $payload) {
+        if (!$payload instanceof WordPayload) {
             $this->logger->error('Failed hyphenation words (got empty payload).');
             return $word;
         }
@@ -199,7 +192,7 @@ class HyphenizerClient implements LoggerAwareInterface
 
         $payload = $multipleWordsRequest->getPayload();
 
-        if (null === $payload) {
+        if (!$payload instanceof WordsPayload) {
             $this->logger->error('Failed hyphenation words (got empty payload).');
             return $wordsHyphenated;
         }
