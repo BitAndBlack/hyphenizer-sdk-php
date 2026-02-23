@@ -14,7 +14,7 @@ namespace BitAndBlack\Hyphenizer\Sdk\Api;
 use Fig\Http\Message\StatusCodeInterface;
 use JsonSerializable;
 
-readonly class Response implements JsonSerializable
+readonly class WordResponse implements ResponseInterface, JsonSerializable
 {
     /**
      * @param int<100, 599> $statusCode
@@ -23,7 +23,7 @@ readonly class Response implements JsonSerializable
     public function __construct(
         private int $statusCode = StatusCodeInterface::STATUS_OK,
         private array $messages = [],
-        private PayloadInterface|null $payload = null,
+        private WordPayload|null $payload = null,
     ) {
     }
 
@@ -31,7 +31,7 @@ readonly class Response implements JsonSerializable
      * @return array{
      *     status: int<100, 599>,
      *     messages: array<int, string>,
-     *     payload: PayloadInterface|array<mixed>,
+     *     payload: WordPayload|null,
      * }
      */
     public function jsonSerialize(): array
@@ -39,7 +39,7 @@ readonly class Response implements JsonSerializable
         return [
             'status' => $this->getStatusCode(),
             'messages' => $this->getMessages(),
-            'payload' => $this->getPayload() ?? [],
+            'payload' => $this->getPayload(),
         ];
     }
 
@@ -59,7 +59,7 @@ readonly class Response implements JsonSerializable
         return $this->messages;
     }
 
-    public function getPayload(): PayloadInterface|null
+    public function getPayload(): WordPayload|null
     {
         return $this->payload;
     }

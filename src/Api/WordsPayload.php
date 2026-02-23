@@ -13,29 +13,29 @@ namespace BitAndBlack\Hyphenizer\Sdk\Api;
 
 use JsonSerializable;
 
-readonly class WordPayload implements PayloadInterface, JsonSerializable
+readonly class WordsPayload implements PayloadInterface, JsonSerializable
 {
     /**
-     * @param array<int, Word> $word
+     * @param array<string, array<int, Word>> $words
      */
     public function __construct(
-        private array $word,
+        private array $words,
     ) {
     }
 
     /**
-     * @return array<int, Word>
+     * @return array<string, array<int, Word>>
      */
     public function jsonSerialize(): array
     {
-        return $this->getWord();
+        return $this->getWords();
     }
 
     /**
-     * @return array<int, Word>
+     * @return array<string, array<int, Word>>
      */
-    public function getWord(): array
+    public function getWords(): array
     {
-        return $this->word;
+        return $this->words;
     }
 }
