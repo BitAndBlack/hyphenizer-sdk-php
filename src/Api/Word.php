@@ -1,0 +1,72 @@
+<?php
+
+/**
+ * Bit&Black Hyphenizer SDK.
+ *
+ * @author Tobias Köngeter
+ * @copyright Copyright © Bit&Black
+ * @link https://www.bitandblack.com
+ * @license MIT
+ */
+
+namespace BitAndBlack\Hyphenizer\Sdk\Api;
+
+use JsonSerializable;
+
+readonly class Word implements JsonSerializable
+{
+    /**
+     * @param string $hyphenation
+     * @param int<0, 100> $score
+     * @param bool $isApproved
+     * @param bool $hasTypo
+     */
+    public function __construct(
+        private string $hyphenation,
+        private int $score,
+        private bool $isApproved,
+        private bool $hasTypo,
+    ) {
+    }
+
+    /**
+     * @return array{
+     *     hyphenation: string,
+     *     score: int<0, 100>,
+     *     approved: bool,
+     *     hasTypo: bool,
+     * }
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'hyphenation' => $this->getHyphenation(),
+            'score' => $this->getScore(),
+            'approved' => $this->isApproved(),
+            'hasTypo' => $this->hasTypo(),
+        ];
+    }
+
+    public function getHyphenation(): string
+    {
+        return $this->hyphenation;
+    }
+
+    /**
+     * @return int<0, 100>
+     */
+    public function getScore(): int
+    {
+        return $this->score;
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->isApproved;
+    }
+
+    public function hasTypo(): bool
+    {
+        return $this->hasTypo;
+    }
+}
