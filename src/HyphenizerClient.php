@@ -15,6 +15,7 @@ use BitAndBlack\Hyphenizer\Sdk\Api\WordPayload;
 use BitAndBlack\Hyphenizer\Sdk\Api\WordResponse;
 use BitAndBlack\Hyphenizer\Sdk\Api\WordsPayload;
 use BitAndBlack\Hyphenizer\Sdk\Api\WordsResponse;
+use BitAndBlack\Hyphenizer\Sdk\Exception\RequestException;
 use CuyZ\Valinor\Mapper\Source\Source;
 use CuyZ\Valinor\MapperBuilder;
 use Fig\Http\Message\StatusCodeInterface;
@@ -55,7 +56,7 @@ class HyphenizerClient implements LoggerAwareInterface
     }
 
     /**
-     * @throws Exception
+     * @throws RequestException
      */
     public function getSingleWordRequest(string $word): WordResponse
     {
@@ -66,7 +67,7 @@ class HyphenizerClient implements LoggerAwareInterface
         try {
             $response = $this->httpMethodsClient->get($this->hyphenizerUrl . '/v2/words/' . $word, $headers);
         } catch (HttpClientException $httpClientException) {
-            throw new Exception('Failed to request Hyphenizer API.', 0, $httpClientException);
+            throw new RequestException('Failed to request Hyphenizer API.', 0, $httpClientException);
         }
 
         $contents = $response->getBody()->getContents();
@@ -78,7 +79,7 @@ class HyphenizerClient implements LoggerAwareInterface
                 Source::json($contents)
             );
         } catch (Throwable $throwable) {
-            throw new Exception('Failed to decode response.', 0, $throwable);
+            throw new RequestException('Failed to decode response.', 0, $throwable);
         }
 
         return $responseDecoded;
@@ -86,7 +87,7 @@ class HyphenizerClient implements LoggerAwareInterface
 
     /**
      * @param array<int, string> $words
-     * @throws Exception
+     * @throws RequestException
      */
     public function getMultipleWordsRequest(array $words): WordsResponse
     {
@@ -101,7 +102,7 @@ class HyphenizerClient implements LoggerAwareInterface
         try {
             $response = $this->httpMethodsClient->post($this->hyphenizerUrl . '/v2/multiple-words', $headers, $body);
         } catch (HttpClientException $httpClientException) {
-            throw new Exception('Failed to request Hyphenizer API.', 0, $httpClientException);
+            throw new RequestException('Failed to request Hyphenizer API.', 0, $httpClientException);
         }
 
         $contents = $response->getBody()->getContents();
@@ -113,16 +114,14 @@ class HyphenizerClient implements LoggerAwareInterface
                 Source::json($contents)
             );
         } catch (Throwable $throwable) {
-            throw new Exception('Failed to decode response.', 0, $throwable);
+            throw new RequestException('Failed to decode response.', 0, $throwable);
         }
 
         return $wordsResponse;
     }
 
     /**
-     * @param string $word
      * @param positive-int $minScoreRequired
-     * @return string
      */
     public function getSingleWordHyphenated(string $word, int $minScoreRequired = 50): string
     {
