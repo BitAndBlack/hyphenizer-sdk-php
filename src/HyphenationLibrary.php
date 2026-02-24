@@ -231,7 +231,7 @@ class HyphenationLibrary implements LoggerAwareInterface
                 $wordsHyphenatedJson,
             );
         } catch (FilesystemException $filesystemException) {
-            throw new Exception('Failed to update hyphenation library.', 0, $filesystemException);
+            throw new Exception('Failed to update hyphenation library.', $filesystemException);
         }
     }
 

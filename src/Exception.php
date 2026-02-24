@@ -11,6 +11,12 @@
 
 namespace BitAndBlack\Hyphenizer\Sdk;
 
+use Throwable;
+
 class Exception extends \Exception
 {
+    public function __construct(string $message, Throwable|null $previous = null)
+    {
+        parent::__construct($message, 0, $previous);
+    }
 }

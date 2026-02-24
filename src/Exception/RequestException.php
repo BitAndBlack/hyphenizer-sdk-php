@@ -12,7 +12,12 @@
 namespace BitAndBlack\Hyphenizer\Sdk\Exception;
 
 use BitAndBlack\Hyphenizer\Sdk\Exception;
+use Throwable;
 
 class RequestException extends Exception
 {
+    public function __construct(string $message, Throwable|null $previous = null)
+    {
+        parent::__construct($message, $previous);
+    }
 }
