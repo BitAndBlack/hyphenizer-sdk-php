@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * Bit&Black Hyphenizer SDK.
+ *
+ * @author Tobias Köngeter
+ * @copyright Copyright © Bit&Black
+ * @link https://www.bitandblack.com
+ * @license MIT
+ */
+
 use BitAndBlack\Hyphenizer\Sdk\HyphenizerClient;
 
 require_once dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
