@@ -43,16 +43,15 @@ class HyphenizerClient implements LoggerAwareInterface
 
     public function __construct(
         private readonly string $token,
-        private readonly int $minScoreRequired = 50,
-        ?string $hyphenizerUrl = null
+        string|null $hyphenizerUrl = null
     ) {
+        $this->logger = new NullLogger();
         $this->httpMethodsClient = new HttpMethodsClient(
             Psr18ClientDiscovery::find(),
             Psr17FactoryDiscovery::findRequestFactory(),
             Psr17FactoryDiscovery::findStreamFactory(),
         );
         $this->hyphenizerUrl = $hyphenizerUrl ?? $this->hyphenizerUrl;
-        $this->logger = new NullLogger();
     }
 
     /**
@@ -120,7 +119,12 @@ class HyphenizerClient implements LoggerAwareInterface
         return $wordsResponse;
     }
 
-    public function getSingleWordHyphenated(string $word): string
+    /**
+     * @param string $word
+     * @param positive-int $minScoreRequired
+     * @return string
+     */
+    public function getSingleWordHyphenated(string $word, int $minScoreRequired = 50): string
     {
         try {
             $singleWordRequest = $this->getSingleWordRequest($word);
@@ -156,7 +160,7 @@ class HyphenizerClient implements LoggerAwareInterface
             $this->wordsWithTypos[] = $word;
         }
 
-        if ($wordHyphenated->getScore() < $this->minScoreRequired) {
+        if ($wordHyphenated->getScore() < $minScoreRequired) {
             return $word;
         }
 
@@ -165,9 +169,10 @@ class HyphenizerClient implements LoggerAwareInterface
 
     /**
      * @param array<int, string> $words
+     * @param positive-int $minScoreRequired
      * @return array<string, string>
      */
-    public function getWordsHyphenated(array $words): array
+    public function getWordsHyphenated(array $words, int $minScoreRequired = 50): array
     {
         $wordsHyphenated = array_combine(
             $words,
@@ -208,7 +213,7 @@ class HyphenizerClient implements LoggerAwareInterface
                 $this->wordsWithTypos[] = $word;
             }
 
-            if ($hyphenationPossibility->getScore() < $this->minScoreRequired) {
+            if ($hyphenationPossibility->getScore() < $minScoreRequired) {
                 continue;
             }
 
