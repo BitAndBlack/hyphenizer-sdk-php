@@ -11,6 +11,8 @@
 
 namespace BitAndBlack\Hyphenizer\Sdk\Api;
 
-interface PayloadInterface
+use JsonSerializable;
+
+interface PayloadInterface extends JsonSerializable
 {
 }

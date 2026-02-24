@@ -11,9 +11,7 @@
 
 namespace BitAndBlack\Hyphenizer\Sdk\Api;
 
-use JsonSerializable;
-
-readonly class WordPayload implements PayloadInterface, JsonSerializable
+readonly class WordPayload implements PayloadInterface
 {
     /**
      * @param array<int, Word> $word
