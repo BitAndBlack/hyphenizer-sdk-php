@@ -22,6 +22,8 @@ First of all, make sure you have an API token to access the Hyphenizer API. You 
 
 ### Creating and using the client
 
+To communicate with the Hyphenizer API, the [`HyphenizerClient`](./src/HyphenizerClient.php) class can be used:
+
 ```php
 <?php
 
@@ -95,6 +97,33 @@ $wordsHyphenated = $hyphenizerClient->getWordsHyphenated($wordsToHyphenated);
  */
 var_dump($wordsHyphenated);
 ```
+
+### Using the hyphenation library 
+
+To store and manage the words and their hyphenations, you can make use of the [`HyphenationLibrary`](./src/HyphenationLibrary.php) class.
+
+The Hyphenation Library makes use of us the [`league/flysystem`](https://packagist.org/packages/league/flysystem) library, so you can decide where you want to store the words. Per default, it makes use of the [`LocalFilesystemAdapter`](https://github.com/thephpleague/flysystem/blob/3.x/src/Local/LocalFilesystemAdapter.php):
+
+```php
+<?php
+
+use BitAndBlack\Hyphenizer\Sdk\HyphenationLibrary;
+
+$hyphenationLibrary = new HyphenationLibrary(
+    // Optional: new MyCustomFileSystemAdapter()
+);
+```
+
+Those methods will help you to maintain you library:
+
+-   `addWords`: Adds one or more unhyphenated words to the library.
+-   `getHyphenationWords`: Returns a list of all existing words and their hyphenation.
+-   `setHyphenationWords`: Resets the library of hyphenated words. This overrides the existing library entirely.
+
+Before reading or writing the list of words, the Hyphenation Library will call a callback, that you can use the encode/decode or compress/uncompress the list:
+
+-   `setCallbackFileReadAfter`: Defines the callback that gets used after reading the list.
+-   `setCallbackFileReadAfter`: Defines the callback that gets used before writing the list.
 
 ## Help
 

@@ -68,9 +68,11 @@ class HyphenationLibrary implements LoggerAwareInterface
     }
 
     /**
+     * Returns a list of all existing words and their hyphenation.
+     *
      * @return array<non-empty-string, non-empty-string|null>
      */
-    public function getWords(): array
+    public function getHyphenationWords(): array
     {
         if (false === $this->hasLoaded) {
             $this->words = $this->readFromFile();
@@ -116,7 +118,7 @@ class HyphenationLibrary implements LoggerAwareInterface
         );
 
         $wordsMerged = array_merge(
-            $this->getWords(),
+            $this->getHyphenationWords(),
             $words
         );
 
@@ -136,6 +138,9 @@ class HyphenationLibrary implements LoggerAwareInterface
     }
 
     /**
+     * Gets the callback that gets used after reading the list.
+     * This can be used to decode or uncompress a file.
+     *
      * @return Closure(string): string
      */
     public function getCallbackFileReadAfter(): Closure
@@ -144,6 +149,9 @@ class HyphenationLibrary implements LoggerAwareInterface
     }
 
     /**
+     * Defines the callback that gets used after reading the list.
+     * This can be used to decode or uncompress a file.
+     *
      * @param Closure(string): string $callbackFileReadAfter
      * @return $this
      */
@@ -154,6 +162,9 @@ class HyphenationLibrary implements LoggerAwareInterface
     }
 
     /**
+     * Gets the callback that gets used before writing the list.
+     * This can be used to encode or compress a file.
+     *
      * @return Closure(string): string
      */
     public function getCallbackFileWriteBefore(): Closure
@@ -162,6 +173,9 @@ class HyphenationLibrary implements LoggerAwareInterface
     }
 
     /**
+     * Defines the callback that gets used before writing the list.
+     * This can be used to encode or compress a file.
+     *
      * @param Closure(string): string $callbackFileWriteBefore
      * @return $this
      */
@@ -218,7 +232,7 @@ class HyphenationLibrary implements LoggerAwareInterface
         ;
 
         $wordsHyphenatedJson = $jsonNormalizer->normalize(
-            $this->getWords()
+            $this->getHyphenationWords()
         );
 
         $wordsHyphenatedJson = $this->getCallbackFileWriteBefore()($wordsHyphenatedJson);
