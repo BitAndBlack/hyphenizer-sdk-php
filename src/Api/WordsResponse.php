@@ -17,13 +17,13 @@ use JsonSerializable;
 readonly class WordsResponse implements ResponseInterface, JsonSerializable
 {
     /**
-     * @param int<100, 599> $statusCode
+     * @param int<100, 599> $status
      * @param array<int, non-empty-string> $messages
      */
     public function __construct(
-        private int $statusCode = StatusCodeInterface::STATUS_OK,
+        private int $status = StatusCodeInterface::STATUS_OK,
         private array $messages = [],
-        private WordsPayload|null $wordsPayload = null,
+        private WordsPayload|null $payload = null,
     ) {
     }
 
@@ -48,7 +48,7 @@ readonly class WordsResponse implements ResponseInterface, JsonSerializable
      */
     public function getStatusCode(): int
     {
-        return $this->statusCode;
+        return $this->status;
     }
 
     /**
@@ -61,6 +61,6 @@ readonly class WordsResponse implements ResponseInterface, JsonSerializable
 
     public function getPayload(): WordsPayload|null
     {
-        return $this->wordsPayload;
+        return $this->payload;
     }
 }

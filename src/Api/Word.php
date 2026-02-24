@@ -22,7 +22,7 @@ readonly class Word implements JsonSerializable
     public function __construct(
         private string $hyphenation,
         private int $score,
-        private bool $isApproved,
+        private bool $approved,
         private bool $hasTypo,
     ) {
     }
@@ -63,7 +63,7 @@ readonly class Word implements JsonSerializable
 
     public function isApproved(): bool
     {
-        return $this->isApproved;
+        return $this->approved;
     }
 
     public function hasTypo(): bool

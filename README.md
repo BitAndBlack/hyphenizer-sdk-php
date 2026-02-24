@@ -18,7 +18,83 @@ This library is made for the use with [Composer](https://packagist.org/packages/
 
 ## Usage 
 
-TBD
+First of all, make sure you have an API token to access the Hyphenizer API. You can create on under [www.hyphenizer.com](https://www.hyphenizer.com).
+
+### Creating and using the client
+
+```php
+<?php
+
+use BitAndBlack\Hyphenizer\Sdk\HyphenizerClient;
+
+$hyphenizerClient = new HyphenizerClient('your_token');
+```
+
+There are two methods to call the API and get its response: `getSingleWordRequest` and `getMultipleWordsRequest`. They provide detailed information about the requested words:
+
+```php
+<?php
+
+$wordsToHyphenated = [
+    'Bodensee',
+    'Bodenseefelchen',
+];
+
+$wordsHyphenated = $hyphenizerClient->getMultipleWordsRequest($wordsToHyphenated);
+
+/**
+ * This will dump:
+ *
+ * object(BitAndBlack\Hyphenizer\Sdk\Api\WordsResponse) {
+ *     ["status":"BitAndBlack\Hyphenizer\Sdk\Api\WordsResponse"] => int(200)
+ *     ["messages":"BitAndBlack\Hyphenizer\Sdk\Api\WordsResponse"] => array(0) {}
+ *     ["payload":"BitAndBlack\Hyphenizer\Sdk\Api\WordsResponse"] => object(BitAndBlack\Hyphenizer\Sdk\Api\WordsPayload) {
+ *         ["words":"BitAndBlack\Hyphenizer\Sdk\Api\WordsPayload"] => array(2) {
+ *             ["Bodensee"] => array(1) {
+ *                 [0] => object(BitAndBlack\Hyphenizer\Sdk\Api\Word) {
+ *                     ["hyphenation":"BitAndBlack\Hyphenizer\Sdk\Api\Word"] => string(9) "Boden|see"
+ *                     ["score":"BitAndBlack\Hyphenizer\Sdk\Api\Word"] => int(100)
+ *                     ["approved":"BitAndBlack\Hyphenizer\Sdk\Api\Word"] => bool(true)
+ *                     ["hasTypo":"BitAndBlack\Hyphenizer\Sdk\Api\Word"] => bool(false)
+ *                 }
+ *             }
+ *             ["Bodenseefelchen"] => array(1) {
+ *                 [0] => object(BitAndBlack\Hyphenizer\Sdk\Api\Word) {
+ *                     ["hyphenation":"BitAndBlack\Hyphenizer\Sdk\Api\Word"] => string(16) "Bodensee|felchen"
+ *                     ["score":"BitAndBlack\Hyphenizer\Sdk\Api\Word"] => int(100)
+ *                     ["approved":"BitAndBlack\Hyphenizer\Sdk\Api\Word"] => bool(true)
+ *                     ["hasTypo":"BitAndBlack\Hyphenizer\Sdk\Api\Word"] => bool(false)
+ *                 }
+ *             }
+ *         }
+ *     }
+ * }
+ */
+var_dump($wordsHyphenated);
+```
+
+If you are satisfied with receiving a simple list of the hyphenated words, you can also use methods `getSingleWordHyphenated` and `getWordsHyphenated`:
+
+```php
+<?php
+
+$wordsToHyphenated = [
+    'Bodensee',
+    'Bodenseefelchen',
+];
+
+$wordsHyphenated = $hyphenizerClient->getWordsHyphenated($wordsToHyphenated);
+
+/**
+ * This will dump: 
+ * 
+ * array(2) {
+ *     ["Bodensee"] => string(9) "Boden|see"
+ *     ["Bodenseefelchen"] => string(16) "Bodensee|felchen"
+ * }
+ */
+var_dump($wordsHyphenated);
+```
 
 ## Help
 
