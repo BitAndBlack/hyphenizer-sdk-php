@@ -12,9 +12,8 @@
 namespace BitAndBlack\Hyphenizer\Sdk\Api;
 
 use Fig\Http\Message\StatusCodeInterface;
-use JsonSerializable;
 
-readonly class WordsResponse implements ResponseInterface, JsonSerializable
+readonly class WordsResponse implements ResponseInterface
 {
     /**
      * @param int<100, 599> $status

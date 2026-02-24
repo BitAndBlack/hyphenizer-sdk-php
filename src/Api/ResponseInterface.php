@@ -11,13 +11,15 @@
 
 namespace BitAndBlack\Hyphenizer\Sdk\Api;
 
-interface ResponseInterface
+use JsonSerializable;
+
+interface ResponseInterface extends JsonSerializable
 {
     /**
      * @return array{
      *     status: int<100, 599>,
      *     messages: array<int, string>,
-     *     payload: WordPayload|null,
+     *     payload: PayloadInterface|null,
      * }
      */
     public function jsonSerialize(): array;
