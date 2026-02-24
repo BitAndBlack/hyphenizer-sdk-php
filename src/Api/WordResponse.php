@@ -18,7 +18,7 @@ readonly class WordResponse implements ResponseInterface, JsonSerializable
 {
     /**
      * @param int<100, 599> $statusCode
-     * @param array<int, string> $messages
+     * @param array<int, non-empty-string> $messages
      */
     public function __construct(
         private int $statusCode = StatusCodeInterface::STATUS_OK,
@@ -30,7 +30,7 @@ readonly class WordResponse implements ResponseInterface, JsonSerializable
     /**
      * @return array{
      *     status: int<100, 599>,
-     *     messages: array<int, string>,
+     *     messages: array<int, non-empty-string>,
      *     payload: WordPayload|null,
      * }
      */
@@ -52,7 +52,7 @@ readonly class WordResponse implements ResponseInterface, JsonSerializable
     }
 
     /**
-     * @return array<int, string>
+     * @return array<int, non-empty-string>
      */
     public function getMessages(): array
     {

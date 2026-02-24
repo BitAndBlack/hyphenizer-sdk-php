@@ -16,6 +16,7 @@ use JsonSerializable;
 readonly class Word implements JsonSerializable
 {
     /**
+     * @param non-empty-string $hyphenation
      * @param int<0, 100> $score
      */
     public function __construct(
@@ -28,7 +29,7 @@ readonly class Word implements JsonSerializable
 
     /**
      * @return array{
-     *     hyphenation: string,
+     *     hyphenation: non-empty-string,
      *     score: int<0, 100>,
      *     approved: bool,
      *     hasTypo: bool,
@@ -44,6 +45,9 @@ readonly class Word implements JsonSerializable
         ];
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getHyphenation(): string
     {
         return $this->hyphenation;

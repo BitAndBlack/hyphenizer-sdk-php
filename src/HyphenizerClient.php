@@ -42,6 +42,10 @@ class HyphenizerClient implements LoggerAwareInterface
 
     private LoggerInterface $logger;
 
+    /**
+     * @param non-empty-string $token
+     * @param non-empty-string|null $hyphenizerUrl
+     */
     public function __construct(
         private readonly string $token,
         string|null $hyphenizerUrl = null
@@ -56,6 +60,7 @@ class HyphenizerClient implements LoggerAwareInterface
     }
 
     /**
+     * @param non-empty-string $word
      * @throws RequestException
      */
     public function getSingleWordRequest(string $word): WordResponse
@@ -86,7 +91,7 @@ class HyphenizerClient implements LoggerAwareInterface
     }
 
     /**
-     * @param array<int, string> $words
+     * @param array<int, non-empty-string> $words
      * @throws RequestException
      */
     public function getMultipleWordsRequest(array $words): WordsResponse
@@ -121,7 +126,8 @@ class HyphenizerClient implements LoggerAwareInterface
     }
 
     /**
-     * @param positive-int $minScoreRequired
+     * @param non-empty-string $word
+     * @param int<0, 100> $minScoreRequired
      */
     public function getSingleWordHyphenated(string $word, int $minScoreRequired = 50): string
     {
@@ -167,9 +173,9 @@ class HyphenizerClient implements LoggerAwareInterface
     }
 
     /**
-     * @param array<int, string> $words
-     * @param positive-int $minScoreRequired
-     * @return array<string, string>
+     * @param array<int, non-empty-string> $words
+     * @param int<0, 100> $minScoreRequired
+     * @return array<non-empty-string, non-empty-string>
      */
     public function getWordsHyphenated(array $words, int $minScoreRequired = 50): array
     {
