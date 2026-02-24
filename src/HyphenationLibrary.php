@@ -32,7 +32,7 @@ use Throwable;
 class HyphenationLibrary implements LoggerAwareInterface
 {
     /**
-     * @var array<string, string|null>
+     * @var array<non-empty-string, non-empty-string|null>
      */
     private array $words = [];
 
@@ -41,7 +41,7 @@ class HyphenationLibrary implements LoggerAwareInterface
     private bool $hasLoaded = false;
 
     /**
-     * @var Closure(string): (string)
+     * @var Closure(string): string
      */
     private Closure $callbackFileReadAfter;
 
@@ -54,13 +54,12 @@ class HyphenationLibrary implements LoggerAwareInterface
 
     public function __construct(
         FilesystemAdapter|null $filesystemAdapter = null,
-        PathInterface $path = new Path(),
         private readonly FileInterface $file = new File(),
     ) {
         $this->logger = new NullLogger();
 
         $adapter = $filesystemAdapter ?? new LocalFilesystemAdapter(
-            $path->getLibraryFolder()
+            (new Path())->getLibraryFolder()
         );
 
         $this->filesystem = new Filesystem($adapter);
@@ -70,7 +69,7 @@ class HyphenationLibrary implements LoggerAwareInterface
     }
 
     /**
-     * @return array<string, string|null>
+     * @return array<non-empty-string, non-empty-string|null>
      */
     public function getWords(): array
     {
@@ -86,7 +85,7 @@ class HyphenationLibrary implements LoggerAwareInterface
     /**
      * Resets the library of hyphenated words. This overrides the existing library entirely.
      *
-     * @param array<string, string|null> $wordsHyphenated
+     * @param array<non-empty-string, non-empty-string|null> $wordsHyphenated
      * @return $this
      * @throws Exception
      */
@@ -106,7 +105,7 @@ class HyphenationLibrary implements LoggerAwareInterface
     /**
      * Adds one or more unhyphenated words to the library.
      *
-     * @param array<int, string> $words
+     * @param array<int, non-empty-string> $words
      * @return $this
      * @throws Exception
      */
@@ -138,7 +137,7 @@ class HyphenationLibrary implements LoggerAwareInterface
     }
 
     /**
-     * @return Closure(string): (string)
+     * @return Closure(string): string
      */
     public function getCallbackFileReadAfter(): Closure
     {
@@ -146,7 +145,7 @@ class HyphenationLibrary implements LoggerAwareInterface
     }
 
     /**
-     * @param Closure(string): (string) $callbackFileReadAfter
+     * @param Closure(string): string $callbackFileReadAfter
      * @return $this
      */
     public function setCallbackFileReadAfter(Closure $callbackFileReadAfter): self
@@ -174,7 +173,7 @@ class HyphenationLibrary implements LoggerAwareInterface
     }
 
     /**
-     * @return array<string, string|null>
+     * @return array<non-empty-string, non-empty-string|null>
      */
     private function readFromFile(): array
     {
@@ -192,9 +191,9 @@ class HyphenationLibrary implements LoggerAwareInterface
         $wordsHyphenated = null;
 
         try {
-            /** @var array<string, string> $wordsHyphenated */
+            /** @var array<non-empty-string, non-empty-string> $wordsHyphenated */
             $wordsHyphenated = (new MapperBuilder())->mapper()->map(
-                'array<string, string>',
+                'array<non-empty-string, non-empty-string>',
                 new JsonSource($wordsHyphenatedJsonContent)
             );
         } catch (Throwable $throwable) {
