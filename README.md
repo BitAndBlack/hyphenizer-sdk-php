@@ -123,7 +123,7 @@ Those methods will help you to maintain you library:
 Before reading or writing the list of words, the Hyphenation Library will call a callback, that you can use the encode/decode or compress/uncompress the list:
 
 -   `setCallbackFileReadAfter`: Defines the callback that gets used after reading the list.
--   `setCallbackFileReadAfter`: Defines the callback that gets used before writing the list.
+-   `setCallbackFileWriteBefore`: Defines the callback that gets used before writing the list.
 
 ## Help
 
