@@ -197,9 +197,9 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
         $wordsHyphenated = null;
 
         try {
-            /** @var array<non-empty-string, non-empty-string> $wordsHyphenated */
+            /** @var array<non-empty-string, non-empty-string|null> $wordsHyphenated */
             $wordsHyphenated = (new MapperBuilder())->mapper()->map(
-                'array<non-empty-string, non-empty-string>',
+                'array<non-empty-string, non-empty-string|null>',
                 new JsonSource($wordsHyphenatedJsonContent)
             );
         } catch (Throwable $throwable) {
