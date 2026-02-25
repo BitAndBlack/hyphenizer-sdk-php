@@ -29,7 +29,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
 
-class HyphenizerClient implements LoggerAwareInterface
+class HyphenizerClient implements HyphenizerClientInterface, LoggerAwareInterface
 {
     private readonly HttpMethodsClientInterface $httpMethodsClient;
 

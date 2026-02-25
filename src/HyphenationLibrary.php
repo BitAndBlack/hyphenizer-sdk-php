@@ -28,7 +28,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
 
-class HyphenationLibrary implements LoggerAwareInterface
+class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInterface
 {
     /**
      * @var array<non-empty-string, non-empty-string|null>
