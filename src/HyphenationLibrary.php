@@ -68,9 +68,7 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
     }
 
     /**
-     * Returns a list of all existing words and their hyphenation.
-     *
-     * @return array<non-empty-string, non-empty-string|null>
+     * @inheritDoc
      */
     public function getHyphenationWords(): array
     {
@@ -84,19 +82,15 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
     }
 
     /**
-     * Resets the library of hyphenated words. This overrides the existing library entirely.
-     *
-     * @param array<non-empty-string, non-empty-string|null> $wordsHyphenated
-     * @return $this
-     * @throws Exception
+     * @inheritDoc
      */
-    public function setHyphenationWords(array $wordsHyphenated, bool $saveList = true): self
+    public function setHyphenationWords(array $wordsHyphenated, bool $saveLibrary = true): self
     {
         $this->words = $wordsHyphenated;
         uksort($this->words, strcasecmp(...));
         $this->hasLoaded = true;
 
-        if (true === $saveList) {
+        if (true === $saveLibrary) {
             $this->writeToFile();
         }
 
@@ -104,13 +98,9 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
     }
 
     /**
-     * Adds one or more unhyphenated words to the library.
-     *
-     * @param array<int, non-empty-string> $words
-     * @return $this
-     * @throws Exception
+     * @inheritDoc
      */
-    public function addWords(array $words, bool $saveList = true): self
+    public function addWords(array $words, bool $saveLibrary = true): self
     {
         $words = array_combine(
             array_values($words),
@@ -122,9 +112,12 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
             $words
         );
 
-        return $this->setHyphenationWords($wordsMerged, $saveList);
+        return $this->setHyphenationWords($wordsMerged, $saveLibrary);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function isLibraryExisting(): bool
     {
         try {
@@ -250,5 +243,28 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getHyphenatedWord(string $word): string|null
+    {
+        return $this->getHyphenationWords()[$word] ?? null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function saveLibrary(): bool
+    {
+        try {
+            $this->writeToFile();
+        } catch (Exception $exception) {
+            $this->logger->error('Failed to save hyphenation library: ' . $exception->getMessage());
+            return false;
+        }
+
+        return true;
     }
 }

@@ -21,13 +21,21 @@ interface HyphenationLibraryInterface
     public function getHyphenationWords(): array;
 
     /**
+     * Returns a hyphenated word if it exists in the library.
+     *
+     * @param string $word
+     * @return non-empty-string|null
+     */
+    public function getHyphenatedWord(string $word): string|null;
+
+    /**
      * Resets the library of hyphenated words. This overrides the existing library entirely.
      *
      * @param array<non-empty-string, non-empty-string|null> $wordsHyphenated
      * @return $this
      * @throws Exception
      */
-    public function setHyphenationWords(array $wordsHyphenated, bool $saveList = true): self;
+    public function setHyphenationWords(array $wordsHyphenated, bool $saveLibrary = true): self;
 
     /**
      * Adds one or more unhyphenated words to the library.
@@ -36,7 +44,7 @@ interface HyphenationLibraryInterface
      * @return $this
      * @throws Exception
      */
-    public function addWords(array $words, bool $saveList = true): self;
+    public function addWords(array $words, bool $saveLibrary = true): self;
 
     /**
      * Tells if the library exists.
@@ -44,4 +52,11 @@ interface HyphenationLibraryInterface
      * @return bool
      */
     public function isLibraryExisting(): bool;
+
+    /**
+     * Saves the current state of the library to the file system.
+     *
+     * @return bool
+     */
+    public function saveLibrary(): bool;
 }
