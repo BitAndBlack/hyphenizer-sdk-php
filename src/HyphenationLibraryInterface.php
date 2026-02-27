@@ -94,7 +94,7 @@ interface HyphenationLibraryInterface
      *
      * @return $this
      */
-    public function addDataFromApiWordsResponse(WordsResponse $wordsResponse): self;
+    public function addDataFromApiWordsResponse(WordsResponse $wordsResponse, bool $saveLibrary = true): self;
 
     /**
      * Adds a word and its details to the hyphenation library.

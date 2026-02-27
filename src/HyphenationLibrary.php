@@ -74,13 +74,17 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
     /**
      * @inheritDoc
      */
-    public function addDataFromApiWordsResponse(WordsResponse $wordsResponse): self
+    public function addDataFromApiWordsResponse(WordsResponse $wordsResponse, bool $saveLibrary = true): self
     {
         $payload = $wordsResponse->getPayload();
         $words = $payload?->getWords() ?? [];
 
         foreach ($words as $word => $wordHyphenations) {
             $this->addWordDetails($word, ...$wordHyphenations);
+        }
+
+        if (true === $saveLibrary) {
+            $this->saveLibrary();
         }
 
         return $this;
