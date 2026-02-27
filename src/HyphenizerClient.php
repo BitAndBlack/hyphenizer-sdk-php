@@ -179,28 +179,42 @@ class HyphenizerClient implements HyphenizerClientInterface, LoggerAwareInterfac
      */
     public function getWordsHyphenated(array $words, int $minScoreRequired = 50): array
     {
-        $wordsHyphenated = array_combine(
-            $words,
-            $words,
-        );
-
         try {
-            $multipleWordsRequest = $this->getMultipleWordsRequest($words);
+            $wordsResponse = $this->getMultipleWordsRequest($words);
         } catch (Exception $exception) {
             $this->logger->error('Failed hyphenation words with exception: {exception}.', [
                 'exception' => $exception->getMessage(),
             ]);
-            return $wordsHyphenated;
+
+            return array_combine(
+                $words,
+                $words,
+            );
         }
 
-        if (StatusCodeInterface::STATUS_OK !== $multipleWordsRequest->getStatusCode()) {
+        return $this->getWordsHyphenatedFromWordsResponse(
+            $wordsResponse,
+            $minScoreRequired
+        );
+    }
+
+    /**
+     * @param WordsResponse $wordsResponse
+     * @param int<0, 100> $minScoreRequired
+     * @return array<non-empty-string, non-empty-string>
+     */
+    public function getWordsHyphenatedFromWordsResponse(WordsResponse $wordsResponse, int $minScoreRequired = 50): array
+    {
+        $wordsHyphenated = [];
+
+        if (StatusCodeInterface::STATUS_OK !== $wordsResponse->getStatusCode()) {
             $this->logger->error('Failed hyphenation words because of status code: {code}.', [
-                'code' => $multipleWordsRequest->getStatusCode(),
+                'code' => $wordsResponse->getStatusCode(),
             ]);
             return $wordsHyphenated;
         }
 
-        $payload = $multipleWordsRequest->getPayload();
+        $payload = $wordsResponse->getPayload();
 
         if (!$payload instanceof WordsPayload) {
             $this->logger->error('Failed hyphenation words (got empty payload).');
