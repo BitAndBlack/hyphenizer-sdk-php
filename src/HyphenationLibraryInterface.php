@@ -80,6 +80,15 @@ interface HyphenationLibraryInterface
     public function addWords(array $words, bool $saveLibrary = true): self;
 
     /**
+     * Provides detailed information about all existing words in the library.
+     * Each word contains a list of {@see Word}s. There's normally only one possibility to
+     * hyphenate a word, but there are few words, where multiple possibilities exist.
+     *
+     * @return array<non-empty-string, array<int, Word>>
+     */
+    public function getWordsDetails(): array;
+
+    /**
      * Provides detailed information about a specific word — when it exists in the library.
      * The returned array contains a list of {@see Word}s. There's normally only one possibility to
      * hyphenate a word, but there are few words, where multiple possibilities exist.

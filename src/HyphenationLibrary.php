@@ -314,8 +314,16 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
     /**
      * @inheritDoc
      */
+    public function getWordsDetails(): array
+    {
+        return $this->hyphenationLibraryCache->getWordsDetails();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getWordDetails(string $word): array|null
     {
-        return $this->hyphenationLibraryCache->getWordsDetails()[$word] ?? null;
+        return $this->getWordsDetails()[$word] ?? null;
     }
 }
