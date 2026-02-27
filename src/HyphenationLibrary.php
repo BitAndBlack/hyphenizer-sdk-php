@@ -46,7 +46,7 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
 
     private readonly Filesystem $filesystem;
 
-    private readonly HyphenationLibraryCacheInterface $hyphenationLibraryCache;
+    private HyphenationLibraryCacheInterface $hyphenationLibraryCache;
 
     public function __construct(
         FilesystemAdapter|null $filesystemAdapter = null,
@@ -175,12 +175,20 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
      * Defines the callback that gets used after reading the list.
      * This can be used to decode or uncompress a file.
      *
+     * **Attention**: Setting a callback will cause the library to reload.
+     *
      * @param Closure(string): string $callbackFileReadAfter
      * @return $this
      */
     public function setCallbackFileReadAfter(Closure $callbackFileReadAfter): self
     {
         $this->callbackFileReadAfter = $callbackFileReadAfter;
+
+        /**
+         * As the library may be encoded or compressed, we need to load it again, once the callback has been defined.
+         */
+        $this->hyphenationLibraryCache = $this->readFromFile();
+
         return $this;
     }
 
