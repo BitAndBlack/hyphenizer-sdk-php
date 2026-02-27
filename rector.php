@@ -24,6 +24,7 @@ return RectorConfig::configure()
         codingStyle: true,
         typeDeclarations: true,
         typeDeclarationDocblocks: true,
+        privatization: true,
         naming: true,
     )
     ->withComposerBased(

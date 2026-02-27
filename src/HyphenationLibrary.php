@@ -11,6 +11,8 @@
 
 namespace BitAndBlack\Hyphenizer\Sdk;
 
+use BitAndBlack\Hyphenizer\Sdk\Api\Word;
+use BitAndBlack\Hyphenizer\Sdk\Api\WordsResponse;
 use BitAndBlack\Hyphenizer\Sdk\Util\File;
 use BitAndBlack\Hyphenizer\Sdk\Util\FileInterface;
 use BitAndBlack\Hyphenizer\Sdk\Util\Path;
@@ -30,14 +32,7 @@ use Throwable;
 
 class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInterface
 {
-    /**
-     * @var array<non-empty-string, non-empty-string|null>
-     */
-    private array $words = [];
-
     private LoggerInterface $logger;
-
-    private bool $hasLoaded = false;
 
     /**
      * @var Closure(string): string
@@ -50,6 +45,8 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
     private Closure $callbackFileWriteBefore;
 
     private readonly Filesystem $filesystem;
+
+    private readonly HyphenationLibraryCacheInterface $hyphenationLibraryCache;
 
     public function __construct(
         FilesystemAdapter|null $filesystemAdapter = null,
@@ -65,6 +62,37 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
 
         $this->callbackFileReadAfter = static fn (string $content): string => $content;
         $this->callbackFileWriteBefore = static fn (string $content): string => $content;
+
+        /**
+         * This loads the cached library, so it can be properly accessed.
+         * The library may be encoded or compressed, what makes it unusable here,
+         * as long as the callback don't have been set. This should be okay.
+         */
+        $this->hyphenationLibraryCache = $this->readFromFile();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addDataFromApiWordsResponse(WordsResponse $wordsResponse): self
+    {
+        $payload = $wordsResponse->getPayload();
+        $words = $payload?->getWords() ?? [];
+
+        foreach ($words as $word => $wordHyphenations) {
+            $this->addWordDetails($word, ...$wordHyphenations);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addWordDetails(string $word, Word ...$wordDetails): self
+    {
+        $this->hyphenationLibraryCache->addWordDetails($word, ...$wordDetails);
+        return $this;
     }
 
     /**
@@ -72,13 +100,17 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
      */
     public function getHyphenationWords(): array
     {
-        if (false === $this->hasLoaded) {
-            $this->words = $this->readFromFile();
-            uksort($this->words, strcasecmp(...));
-            $this->hasLoaded = true;
+        $words = $this->hyphenationLibraryCache->getWords();
+
+        foreach ($this->hyphenationLibraryCache->getWordsDetails() as $word => $wordDetails) {
+            if (true === array_key_exists($word, $words)) {
+                continue;
+            }
+
+            $words[$word] = $wordDetails[0]->getHyphenation();
         }
 
-        return $this->words;
+        return $words;
     }
 
     /**
@@ -86,12 +118,10 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
      */
     public function setHyphenationWords(array $wordsHyphenated, bool $saveLibrary = true): self
     {
-        $this->words = $wordsHyphenated;
-        uksort($this->words, strcasecmp(...));
-        $this->hasLoaded = true;
+        $this->hyphenationLibraryCache->setWords($wordsHyphenated);
 
         if (true === $saveLibrary) {
-            $this->writeToFile();
+            $this->saveLibrary();
         }
 
         return $this;
@@ -108,7 +138,7 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
         );
 
         $wordsMerged = array_merge(
-            $this->getHyphenationWords(),
+            $this->hyphenationLibraryCache->getWords(),
             $words
         );
 
@@ -178,40 +208,39 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
         return $this;
     }
 
-    /**
-     * @return array<non-empty-string, non-empty-string|null>
-     */
-    private function readFromFile(): array
+    private function readFromFile(): HyphenationLibraryCacheInterface
     {
+        $wordsHyphenatedJsonContent = '{}';
+
+        if (false === $this->isLibraryExisting()) {
+            $this->filesystem->write(
+                $this->file->getWordsHyphenatedJsonFile(),
+                $wordsHyphenatedJsonContent
+            );
+        }
+
         try {
             $wordsHyphenatedJsonContent = $this->filesystem->read(
                 $this->file->getWordsHyphenatedJsonFile(),
             );
         } catch (FilesystemException $filesystemException) {
             $this->logger->error('Failed to encode hyphenation library: ' . $filesystemException->getMessage());
-            return [];
         }
 
         $wordsHyphenatedJsonContent = $this->getCallbackFileReadAfter()($wordsHyphenatedJsonContent);
 
-        $wordsHyphenated = null;
+        $hyphenationLibraryCache = null;
 
         try {
-            /** @var array<non-empty-string, non-empty-string|null> $wordsHyphenated */
-            $wordsHyphenated = (new MapperBuilder())->mapper()->map(
-                'array<non-empty-string, non-empty-string|null>',
+            $hyphenationLibraryCache = (new MapperBuilder())->mapper()->map(
+                HyphenationLibraryCache::class,
                 new JsonSource($wordsHyphenatedJsonContent)
             );
         } catch (Throwable $throwable) {
             $this->logger->error('Failed to encode hyphenation library: ' . $throwable->getMessage());
         }
 
-        if (false === is_array($wordsHyphenated)) {
-            $this->logger->error('The hyphenation library seems to be broken.');
-            return [];
-        }
-
-        return $wordsHyphenated;
+        return $hyphenationLibraryCache ?? new HyphenationLibraryCache();
     }
 
     /**
@@ -219,13 +248,15 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
      */
     private function writeToFile(): void
     {
+        $this->hyphenationLibraryCache->updateDateTimeLibraryUpdated();
+
         $jsonNormalizer = (new NormalizerBuilder())
             ->normalizer(Format::json())
             ->withOptions(JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
         ;
 
         $wordsHyphenatedJson = $jsonNormalizer->normalize(
-            $this->getHyphenationWords()
+            $this->hyphenationLibraryCache
         );
 
         $wordsHyphenatedJson = $this->getCallbackFileWriteBefore()($wordsHyphenatedJson);
@@ -266,5 +297,13 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
         }
 
         return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getWordDetails(string $word): array|null
+    {
+        return $this->hyphenationLibraryCache->getWordsDetails()[$word] ?? null;
     }
 }

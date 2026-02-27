@@ -114,11 +114,21 @@ $hyphenationLibrary = new HyphenationLibrary(
 );
 ```
 
-Those methods will help you to maintain you library:
+To update your library with the API's response of hyphenated words, you can use the `addDataFromApiWordsResponse` method:
 
--   `addWords`: Adds one or more unhyphenated words to the library.
--   `getHyphenationWords`: Returns a list of all existing words and their hyphenation.
--   `setHyphenationWords`: Resets the library of hyphenated words. This overrides the existing library entirely.
+```php
+<?php
+
+$wordsHyphenated = $hyphenizerClient->getMultipleWordsRequest($wordsToHyphenated);
+
+$hyphenationLibrary->addDataFromApiWordsResponse($wordsHyphenated);
+```
+
+To access the words and their hyphenations from your library, there are multiple possibilities:
+
+1.  Use `getHyphenatedWord` to get the pure hyphenation of a given word.
+2.  Use `getHyphenationWords` to get all the existing hyphenations pure at once.
+3.  Use `getWordDetails` to get all information of a word. This is a list of [Word](./src/Api/Word.php)s, including different hyphenation possibilities, the hyphenation score, and if our team has approved the hyphenation.
 
 Before reading or writing the list of words, the Hyphenation Library will call a callback, that you can use the encode/decode or compress/uncompress the list:
 
@@ -141,6 +151,28 @@ Before reading or writing the list of words, the Hyphenation Library will call a
         static fn (string $content): string => base64_encode($content);
     );
     ```
+
+You can add words to your library at any time, that should be hyphenated at a later point: 
+
+```php
+$hyphenationLibrary->addWords([
+    'Bodensee',
+    'Bodenseefelchen',
+]);
+```
+
+It's also possible to provide custom hyphenations without using the Hyphenizer API:
+
+```php
+$hyphenationLibrary->setHyphenationWords([
+    'Bodensee' => 'Boden|see',
+    'Bodenseefelchen' => 'Bodensee|felchen',
+]);
+```
+
+The Hyphenation Library stores this list separately, as it provides fewer information. 
+
+When calling `getHyphenationWords`, both lists will be merged together, whereas the custom list has always a higher priority.
 
 ## Help
 
