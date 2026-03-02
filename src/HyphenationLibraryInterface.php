@@ -13,6 +13,7 @@ namespace BitAndBlack\Hyphenizer\Sdk;
 
 use BitAndBlack\Hyphenizer\Sdk\Api\Word;
 use BitAndBlack\Hyphenizer\Sdk\Api\WordsResponse;
+use DateTimeInterface;
 
 interface HyphenationLibraryInterface
 {
@@ -123,4 +124,11 @@ interface HyphenationLibraryInterface
      * Saves the current state of the library to the file system.
      */
     public function saveLibrary(): bool;
+
+    /**
+     * Tells when the library has been updated last.
+     * This refers to the date when the list of hyphenations was last updated – not when new words were added.
+     * This date can then be used to decide whether the API should be contacted again.
+     */
+    public function getDateTimeLibraryUpdated(): DateTimeInterface|null;
 }

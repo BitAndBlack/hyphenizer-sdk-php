@@ -21,6 +21,7 @@ use CuyZ\Valinor\Mapper\Source\JsonSource;
 use CuyZ\Valinor\MapperBuilder;
 use CuyZ\Valinor\Normalizer\Format;
 use CuyZ\Valinor\NormalizerBuilder;
+use DateTimeInterface;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\FilesystemException;
@@ -323,5 +324,13 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
     public function getWordDetails(string $word): array|null
     {
         return $this->getWordsDetails()[$word] ?? null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDateTimeLibraryUpdated(): DateTimeInterface|null
+    {
+        return $this->hyphenationLibraryCache->getDateTimeLibraryUpdated();
     }
 }
