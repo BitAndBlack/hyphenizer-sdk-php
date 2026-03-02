@@ -77,7 +77,20 @@ class HyphenationLibraryCache implements HyphenationLibraryCacheInterface
      */
     public function addWordDetails(string $word, Word ...$wordDetails): self
     {
-        $this->wordsDetails[$word] = array_values($wordDetails);
+        $wordDetails = array_values($wordDetails);
+
+        usort(
+            $wordDetails,
+            static fn (Word $itemA, Word $itemB): int => strcmp(
+                $itemA->getHyphenation(),
+                $itemB->getHyphenation()
+            )
+        );
+
+        $this->wordsDetails[$word] = $wordDetails;
+
+        uksort($this->wordsDetails, strcasecmp(...));
+
         $this->updateDateTimeLibraryUpdated();
         return $this;
     }

@@ -199,7 +199,6 @@ class HyphenizerClient implements HyphenizerClientInterface, LoggerAwareInterfac
     }
 
     /**
-     * @param WordsResponse $wordsResponse
      * @param int<0, 100> $minScoreRequired
      * @return array<non-empty-string, non-empty-string>
      */
