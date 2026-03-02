@@ -260,8 +260,6 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
      */
     private function writeToFile(): void
     {
-        $this->hyphenationLibraryCache->updateDateTimeLibraryUpdated();
-
         $jsonNormalizer = (new NormalizerBuilder())
             ->normalizer(Format::json())
             ->withOptions(JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)

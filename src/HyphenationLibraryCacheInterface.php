@@ -52,13 +52,10 @@ interface HyphenationLibraryCacheInterface extends JsonSerializable
 
     /**
      * Tells when the library has been updated last.
+     * This refers to the date when the list of hyphenations was last updated – not when new words were added.
+     * This date can then be used to decide whether the API should be contacted again.
      */
     public function getDateTimeLibraryUpdated(): DateTimeInterface|null;
-
-    /**
-     * Updates the date when the library was last updated.
-     */
-    public function updateDateTimeLibraryUpdated(): self;
 
     /**
      * Adds a word and its details to the hyphenation library.

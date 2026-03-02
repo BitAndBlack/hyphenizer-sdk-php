@@ -66,15 +66,6 @@ class HyphenationLibraryCache implements HyphenationLibraryCacheInterface
     /**
      * @inheritDoc
      */
-    public function updateDateTimeLibraryUpdated(): self
-    {
-        $this->dateTimeLibraryUpdated = new DateTimeImmutable('now');
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function addWordDetails(string $word, Word ...$wordDetails): self
     {
         $this->wordsDetails[$word] = array_values($wordDetails);
@@ -89,5 +80,11 @@ class HyphenationLibraryCache implements HyphenationLibraryCacheInterface
     public function getWordsDetails(): array
     {
         return $this->wordsDetails;
+    }
+
+    private function updateDateTimeLibraryUpdated(): self
+    {
+        $this->dateTimeLibraryUpdated = new DateTimeImmutable('now');
+        return $this;
     }
 }
