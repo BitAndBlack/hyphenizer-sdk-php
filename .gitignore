@@ -3,3 +3,4 @@
 composer.lock
 .phpunit.cache
 tests/build/report.junit.xml
+.DS_Store
