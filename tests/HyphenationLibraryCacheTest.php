@@ -59,4 +59,35 @@ class HyphenationLibraryCacheTest extends TestCase
             $hyphenationLibraryCache->getWordsDetails()
         );
     }
+
+    public function testMovesWordsBetweenLists(): void
+    {
+        $wordA = new Word('Bodensee', 100, true, false);
+        $wordB = new Word('Bodenseefelchen', 100, true, false);
+
+        $hyphenationLibraryCache = new HyphenationLibraryCache();
+
+        $hyphenationLibraryCache->setWords([
+            'Bodensee' => 'Bodensee',
+            'Bodenseefelchen' => null,
+        ]);
+
+        $hyphenationLibraryCache->addWordDetails('Bodensee', $wordA);
+        $hyphenationLibraryCache->addWordDetails('Bodenseefelchen', $wordB);
+
+        self::assertSame(
+            [
+                'Bodensee' => 'Bodensee',
+            ],
+            $hyphenationLibraryCache->getWords()
+        );
+
+        self::assertSame(
+            [
+                'Bodensee' => [$wordA],
+                'Bodenseefelchen' => [$wordB],
+            ],
+            $hyphenationLibraryCache->getWordsDetails()
+        );
+    }
 }

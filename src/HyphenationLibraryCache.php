@@ -91,6 +91,17 @@ class HyphenationLibraryCache implements HyphenationLibraryCacheInterface
 
         uksort($this->wordsDetails, strcasecmp(...));
 
+        /**
+         * If the hyphenated word already exists in the simple words list, but is null,
+         * we assume, that this word has been collected but not hyphenized yet.
+         * So we remove it, to keep this list as short as possible.
+         * Words from this list having a hyphenation won't get remove, as this is a manually added,
+         * individual hyphenation.
+         */
+        if (true === array_key_exists($word, $this->words) && null === $this->words[$word]) {
+            unset($this->words[$word]);
+        }
+
         $this->updateDateTimeLibraryUpdated();
         return $this;
     }
