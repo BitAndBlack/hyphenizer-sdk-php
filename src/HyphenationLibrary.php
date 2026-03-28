@@ -49,6 +49,8 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
 
     private HyphenationLibraryCacheInterface $hyphenationLibraryCache;
 
+    private bool $hasContentChanged = false;
+
     public function __construct(
         FilesystemAdapter|null $filesystemAdapter = null,
         private readonly FileInterface $file = new File(),
@@ -97,6 +99,7 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
     public function addWordDetails(string $word, Word ...$wordDetails): self
     {
         $this->hyphenationLibraryCache->addWordDetails($word, ...$wordDetails);
+        $this->hasContentChanged = true;
         return $this;
     }
 
@@ -124,6 +127,7 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
     public function setHyphenationWords(array $wordsHyphenated, bool $saveLibrary = true): self
     {
         $this->hyphenationLibraryCache->setWords($wordsHyphenated);
+        $this->hasContentChanged = true;
 
         if (true === $saveLibrary) {
             $this->saveLibrary();
@@ -261,6 +265,14 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
      */
     private function writeToFile(): void
     {
+        /**
+         * If no content was changed, serializing and writing the file to the file system
+         * is getting blocked. This improves the performance of this library.
+         */
+        if (false === $this->hasContentChanged) {
+            return;
+        }
+
         $jsonNormalizer = (new NormalizerBuilder())
             ->normalizer(Format::json())
             ->withOptions(JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
@@ -280,6 +292,8 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
         } catch (FilesystemException $filesystemException) {
             throw new Exception('Failed to update hyphenation library.', $filesystemException);
         }
+
+        $this->hasContentChanged = false;
     }
 
     public function setLogger(LoggerInterface $logger): void
