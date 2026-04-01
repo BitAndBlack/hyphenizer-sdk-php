@@ -75,6 +75,10 @@ class HyphenizerClient implements HyphenizerClientInterface, LoggerAwareInterfac
             throw new RequestException('Failed to request Hyphenizer API.', $httpClientException);
         }
 
+        if ($response->getStatusCode() >= 400) {
+            throw new RequestException('Failed to request Hyphenizer API. (Response code is "' . $response->getStatusCode() . '")');
+        }
+
         $contents = $response->getBody()->getContents();
         $mapper = (new MapperBuilder())->mapper();
 
@@ -108,6 +112,10 @@ class HyphenizerClient implements HyphenizerClientInterface, LoggerAwareInterfac
             $response = $this->httpMethodsClient->post($this->hyphenizerUrl . '/v2/multiple-words', $headers, $body);
         } catch (HttpClientException $httpClientException) {
             throw new RequestException('Failed to request Hyphenizer API.', $httpClientException);
+        }
+
+        if ($response->getStatusCode() >= 400) {
+            throw new RequestException('Failed to request Hyphenizer API. (Response code is "' . $response->getStatusCode() . '")');
         }
 
         $contents = $response->getBody()->getContents();
