@@ -1,5 +1,6 @@
 {
     "name": "bitandblack/hyphenizer-sdk-php",
+    "description": "Use the Bit&Black Hyphenizer API in PHP to supercharge your typography.",
     "license": "MIT",
     "type": "library",
     "authors": [
@@ -30,6 +31,10 @@
         "symfony/http-client": "^7.0 || ^8.0",
         "symfony/var-dumper": "^7.0 || ^8.0",
         "symplify/easy-coding-standard": "^13.0"
+    },
+    "suggest": {
+        "bitandblack/hyphenizer-bundle": "Integrate the Hyphenizer SDK into your Symfony project.",
+        "kiwa/hyphenizer": "Integrate the Hyphenizer SDK into your Kiwa website."
     },
     "autoload": {
         "psr-4": {
