@@ -18,8 +18,21 @@ use Throwable;
 
 class RequestException extends Exception
 {
-    public function __construct(string $message, Throwable|null $previous = null)
+    public function __construct(string|null $message = null, Throwable|null $previous = null)
     {
-        parent::__construct($message, $previous);
+        parent::__construct(
+            $message ?? 'Failed to request Hyphenizer API.',
+            $previous
+        );
+    }
+
+    public static function causeStatusCode(int $statusCode, Throwable|null $previous = null): self
+    {
+        return new self('Failed to request Hyphenizer API. (Response code is "' . $statusCode . '")', $previous);
+    }
+
+    public static function causeDecode(Throwable|null $previous = null): self
+    {
+        return new self('Failed to decode response.', $previous);
     }
 }

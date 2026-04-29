@@ -73,11 +73,11 @@ class HyphenizerClient implements HyphenizerClientInterface, LoggerAwareInterfac
         try {
             $response = $this->httpMethodsClient->get($this->hyphenizerUrl . '/v2/words/' . $word, $headers);
         } catch (HttpClientException $httpClientException) {
-            throw new RequestException('Failed to request Hyphenizer API.', $httpClientException);
+            throw new RequestException(previous: $httpClientException);
         }
 
         if ($response->getStatusCode() >= 400) {
-            throw new RequestException('Failed to request Hyphenizer API. (Response code is "' . $response->getStatusCode() . '")');
+            throw RequestException::causeStatusCode($response->getStatusCode());
         }
 
         $contents = $response->getBody()->getContents();
@@ -89,7 +89,7 @@ class HyphenizerClient implements HyphenizerClientInterface, LoggerAwareInterfac
                 Source::json($contents)
             );
         } catch (Throwable $throwable) {
-            throw new RequestException('Failed to decode response.', $throwable);
+            throw RequestException::causeDecode($throwable);
         }
 
         return $responseDecoded;
@@ -112,11 +112,11 @@ class HyphenizerClient implements HyphenizerClientInterface, LoggerAwareInterfac
         try {
             $response = $this->httpMethodsClient->post($this->hyphenizerUrl . '/v2/multiple-words', $headers, $body);
         } catch (HttpClientException $httpClientException) {
-            throw new RequestException('Failed to request Hyphenizer API.', $httpClientException);
+            throw new RequestException(previous: $httpClientException);
         }
 
         if ($response->getStatusCode() >= 400) {
-            throw new RequestException('Failed to request Hyphenizer API. (Response code is "' . $response->getStatusCode() . '")');
+            throw RequestException::causeStatusCode($response->getStatusCode());
         }
 
         $contents = $response->getBody()->getContents();
@@ -128,7 +128,7 @@ class HyphenizerClient implements HyphenizerClientInterface, LoggerAwareInterfac
                 Source::json($contents)
             );
         } catch (Throwable $throwable) {
-            throw new RequestException('Failed to decode response.', $throwable);
+            throw RequestException::causeDecode($throwable);
         }
 
         return $wordsResponse;
@@ -146,11 +146,11 @@ class HyphenizerClient implements HyphenizerClientInterface, LoggerAwareInterfac
         try {
             $response = $this->httpMethodsClient->post($this->hyphenizerUrl . '/v2/words', $headers);
         } catch (HttpClientException $httpClientException) {
-            throw new RequestException('Failed to request Hyphenizer API.', $httpClientException);
+            throw new RequestException(previous: $httpClientException);
         }
 
         if ($response->getStatusCode() >= 400) {
-            throw new RequestException('Failed to request Hyphenizer API. (Response code is "' . $response->getStatusCode() . '")');
+            throw RequestException::causeStatusCode($response->getStatusCode());
         }
 
         $contents = $response->getBody()->getContents();
@@ -162,7 +162,7 @@ class HyphenizerClient implements HyphenizerClientInterface, LoggerAwareInterfac
                 Source::json($contents)
             );
         } catch (Throwable $throwable) {
-            throw new RequestException('Failed to decode response.', $throwable);
+            throw RequestException::causeDecode($throwable);
         }
 
         return $allWordsResponse;
