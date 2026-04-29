@@ -96,7 +96,7 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
     /**
      * @inheritDoc
      */
-    public function addWordDetails(string $word, Word ...$wordDetails): self
+    public function addWordDetails(string|int $word, Word ...$wordDetails): self
     {
         $this->hyphenationLibraryCache->addWordDetails($word, ...$wordDetails);
         $this->hasContentChanged = true;

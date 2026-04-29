@@ -25,10 +25,12 @@ class HyphenationLibraryCacheTest extends TestCase
             'c' => '3',
             'B' => '2',
             'a' => '1',
+            123456789 => '4',
         ]);
 
         self::assertSame(
             [
+                123456789 => '4',
                 'a' => '1',
                 'B' => '2',
                 'c' => '3',

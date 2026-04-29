@@ -35,7 +35,7 @@ class HyphenizerClient implements HyphenizerClientInterface, LoggerAwareInterfac
     private readonly HttpMethodsClientInterface $httpMethodsClient;
 
     /**
-     * @var array<int, string>
+     * @var array<int, string|int>
      */
     private array $wordsWithTypos = [];
 
@@ -219,7 +219,7 @@ class HyphenizerClient implements HyphenizerClientInterface, LoggerAwareInterfac
     /**
      * @param array<int, non-empty-string> $words
      * @param int<0, 100> $minScoreRequired
-     * @return array<non-empty-string, non-empty-string>
+     * @return array<non-empty-string|int, non-empty-string>
      */
     public function getWordsHyphenated(array $words, int $minScoreRequired = 50): array
     {
@@ -244,7 +244,7 @@ class HyphenizerClient implements HyphenizerClientInterface, LoggerAwareInterfac
 
     /**
      * @param int<0, 100> $minScoreRequired
-     * @return array<non-empty-string, non-empty-string>
+     * @return array<non-empty-string|int, non-empty-string>
      */
     public function getWordsHyphenatedFromWordsResponse(WordsResponse $wordsResponse, int $minScoreRequired = 50): array
     {
@@ -286,7 +286,7 @@ class HyphenizerClient implements HyphenizerClientInterface, LoggerAwareInterfac
     }
 
     /**
-     * @return array<int, string>
+     * @return array<int, string|int>
      */
     public function getWordsWithTypos(): array
     {

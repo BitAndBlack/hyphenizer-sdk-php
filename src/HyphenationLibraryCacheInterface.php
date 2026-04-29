@@ -28,7 +28,7 @@ interface HyphenationLibraryCacheInterface extends JsonSerializable
      * ]
      * ```
      *
-     * @return array<non-empty-string, non-empty-string|null>
+     * @return array<non-empty-string|int, non-empty-string|null>
      */
     public function getWords(): array;
 
@@ -45,7 +45,7 @@ interface HyphenationLibraryCacheInterface extends JsonSerializable
      * ]
      * ```
      *
-     * @param array<non-empty-string, non-empty-string|null> $words
+     * @param array<non-empty-string|int, non-empty-string|null> $words
      * @return $this
      */
     public function setWords(array $words): self;
@@ -60,17 +60,17 @@ interface HyphenationLibraryCacheInterface extends JsonSerializable
     /**
      * Adds a word and its details to the hyphenation library.
      *
-     * @param non-empty-string $word
+     * @param non-empty-string|int $word
      * @return $this
      */
-    public function addWordDetails(string $word, Word ...$wordDetails): self;
+    public function addWordDetails(string|int $word, Word ...$wordDetails): self;
 
     /**
      * Provides detailed information about a specific word — when it exists in the library.
      * The returned array contains a list of {@see Word}s. There's normally only one possibility to
      * hyphenate a word, but there are few words, where multiple possibilities exist.
      *
-     * @return array<non-empty-string, array<int, Word>>
+     * @return array<non-empty-string|int, array<int, Word>>
      */
     public function getWordsDetails(): array;
 }

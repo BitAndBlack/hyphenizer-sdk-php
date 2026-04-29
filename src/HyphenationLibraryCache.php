@@ -18,12 +18,12 @@ use DateTimeInterface;
 class HyphenationLibraryCache implements HyphenationLibraryCacheInterface
 {
     /**
-     * @var array<non-empty-string, non-empty-string|null>
+     * @var array<non-empty-string|int, non-empty-string|null>
      */
     private array $words = [];
 
     /**
-     * @var array<non-empty-string, array<int, Word>>
+     * @var array<non-empty-string|int, array<int, Word>>
      */
     private array $wordsDetails = [];
 
@@ -31,8 +31,8 @@ class HyphenationLibraryCache implements HyphenationLibraryCacheInterface
 
     /**
      * @return array{
-     *     words: array<non-empty-string, non-empty-string|null>,
-     *     wordsDetails: array<non-empty-string, array<int, Word>>,
+     *     words: array<non-empty-string|int, non-empty-string|null>,
+     *     wordsDetails: array<non-empty-string|int, array<int, Word>>,
      *     dateTimeLibraryUpdated: DateTimeInterface|null,
      * }
      */
@@ -60,7 +60,17 @@ class HyphenationLibraryCache implements HyphenationLibraryCacheInterface
     public function setWords(array $words): self
     {
         $this->words = $words;
-        uksort($this->words, strcasecmp(...));
+
+        uksort(
+            $this->words,
+            static function (string|int $itemA, string|int $itemB): int {
+                return strcasecmp(
+                    (string) $itemA,
+                    (string) $itemB
+                );
+            }
+        );
+
         return $this;
     }
 
@@ -75,7 +85,7 @@ class HyphenationLibraryCache implements HyphenationLibraryCacheInterface
     /**
      * @inheritDoc
      */
-    public function addWordDetails(string $word, Word ...$wordDetails): self
+    public function addWordDetails(string|int $word, Word ...$wordDetails): self
     {
         $wordDetails = array_values($wordDetails);
 
@@ -89,7 +99,15 @@ class HyphenationLibraryCache implements HyphenationLibraryCacheInterface
 
         $this->wordsDetails[$word] = $wordDetails;
 
-        uksort($this->wordsDetails, strcasecmp(...));
+        uksort(
+            $this->wordsDetails,
+            static function (string|int $itemA, string|int $itemB): int {
+                return strcasecmp(
+                    (string) $itemA,
+                    (string) $itemB
+                );
+            }
+        );
 
         /**
          * If the hyphenated word already exists in the simple words list, but is null,
