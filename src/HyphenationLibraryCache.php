@@ -47,7 +47,6 @@ class HyphenationLibraryCache implements HyphenationLibraryCacheInterface
 
     /**
      * @inheritDoc
-     * @return array<non-empty-string, non-empty-string|null>
      */
     public function getWords(): array
     {
@@ -126,7 +125,6 @@ class HyphenationLibraryCache implements HyphenationLibraryCacheInterface
 
     /**
      * @inheritDoc
-     * @return array<non-empty-string, array<int, Word>>
      */
     public function getWordsDetails(): array
     {
