@@ -12,6 +12,7 @@
 namespace BitAndBlack\Hyphenizer\Sdk;
 
 use BitAndBlack\Hyphenizer\Sdk\Api\Word;
+use BitAndBlack\Hyphenizer\Sdk\Util\Sorter;
 use DateTimeImmutable;
 use DateTimeInterface;
 
@@ -62,10 +63,7 @@ class HyphenationLibraryCache implements HyphenationLibraryCacheInterface
 
         uksort(
             $this->words,
-            static fn (string|int $itemA, string|int $itemB): int => strcasecmp(
-                (string) $itemA,
-                (string) $itemB
-            )
+            Sorter::sortWords(...)
         );
 
         return $this;
@@ -88,20 +86,14 @@ class HyphenationLibraryCache implements HyphenationLibraryCacheInterface
 
         usort(
             $wordDetails,
-            static fn (Word $itemA, Word $itemB): int => strcmp(
-                $itemA->getHyphenation(),
-                $itemB->getHyphenation()
-            )
+            Sorter::sortWordItems(...)
         );
 
         $this->wordsDetails[$word] = $wordDetails;
 
         uksort(
             $this->wordsDetails,
-            static fn (string|int $itemA, string|int $itemB): int => strcasecmp(
-                (string) $itemA,
-                (string) $itemB
-            )
+            Sorter::sortWords(...)
         );
 
         /**
