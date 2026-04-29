@@ -11,6 +11,7 @@
 
 namespace BitAndBlack\Hyphenizer\Sdk;
 
+use BitAndBlack\Hyphenizer\Sdk\Api\WordsAllResponse;
 use BitAndBlack\Hyphenizer\Sdk\Api\WordPayload;
 use BitAndBlack\Hyphenizer\Sdk\Api\WordResponse;
 use BitAndBlack\Hyphenizer\Sdk\Api\WordsPayload;
@@ -131,6 +132,41 @@ class HyphenizerClient implements HyphenizerClientInterface, LoggerAwareInterfac
         }
 
         return $wordsResponse;
+    }
+
+    /**
+     * @return WordsAllResponse
+     * @throws RequestException
+     */
+    public function getWordsAllRequest(): WordsAllResponse
+    {
+        $headers = [
+            'Authorization' => 'Bearer ' . $this->token,
+        ];
+
+        try {
+            $response = $this->httpMethodsClient->post($this->hyphenizerUrl . '/v2/words', $headers);
+        } catch (HttpClientException $httpClientException) {
+            throw new RequestException('Failed to request Hyphenizer API.', $httpClientException);
+        }
+
+        if ($response->getStatusCode() >= 400) {
+            throw new RequestException('Failed to request Hyphenizer API. (Response code is "' . $response->getStatusCode() . '")');
+        }
+
+        $contents = $response->getBody()->getContents();
+        $mapper = (new MapperBuilder())->mapper();
+
+        try {
+            $allWordsResponse = $mapper->map(
+                WordsAllResponse::class,
+                Source::json($contents)
+            );
+        } catch (Throwable $throwable) {
+            throw new RequestException('Failed to decode response.', $throwable);
+        }
+
+        return $allWordsResponse;
     }
 
     /**
