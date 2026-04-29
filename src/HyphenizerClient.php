@@ -11,9 +11,9 @@
 
 namespace BitAndBlack\Hyphenizer\Sdk;
 
-use BitAndBlack\Hyphenizer\Sdk\Api\WordsAllResponse;
 use BitAndBlack\Hyphenizer\Sdk\Api\WordPayload;
 use BitAndBlack\Hyphenizer\Sdk\Api\WordResponse;
+use BitAndBlack\Hyphenizer\Sdk\Api\WordsAllResponse;
 use BitAndBlack\Hyphenizer\Sdk\Api\WordsPayload;
 use BitAndBlack\Hyphenizer\Sdk\Api\WordsResponse;
 use BitAndBlack\Hyphenizer\Sdk\Exception\RequestException;
@@ -135,7 +135,6 @@ class HyphenizerClient implements HyphenizerClientInterface, LoggerAwareInterfac
     }
 
     /**
-     * @return WordsAllResponse
      * @throws RequestException
      */
     public function getWordsAllRequest(): WordsAllResponse

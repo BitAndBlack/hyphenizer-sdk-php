@@ -62,12 +62,10 @@ class HyphenationLibraryCache implements HyphenationLibraryCacheInterface
 
         uksort(
             $this->words,
-            static function (string|int $itemA, string|int $itemB): int {
-                return strcasecmp(
-                    (string) $itemA,
-                    (string) $itemB
-                );
-            }
+            static fn (string|int $itemA, string|int $itemB): int => strcasecmp(
+                (string) $itemA,
+                (string) $itemB
+            )
         );
 
         return $this;
@@ -100,12 +98,10 @@ class HyphenationLibraryCache implements HyphenationLibraryCacheInterface
 
         uksort(
             $this->wordsDetails,
-            static function (string|int $itemA, string|int $itemB): int {
-                return strcasecmp(
-                    (string) $itemA,
-                    (string) $itemB
-                );
-            }
+            static fn (string|int $itemA, string|int $itemB): int => strcasecmp(
+                (string) $itemA,
+                (string) $itemB
+            )
         );
 
         /**

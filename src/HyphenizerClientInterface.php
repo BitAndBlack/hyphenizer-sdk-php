@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Bit&Black Hyphenizer SDK.
  *
@@ -11,8 +13,8 @@
 
 namespace BitAndBlack\Hyphenizer\Sdk;
 
-use BitAndBlack\Hyphenizer\Sdk\Api\WordsAllResponse;
 use BitAndBlack\Hyphenizer\Sdk\Api\WordResponse;
+use BitAndBlack\Hyphenizer\Sdk\Api\WordsAllResponse;
 use BitAndBlack\Hyphenizer\Sdk\Api\WordsResponse;
 use BitAndBlack\Hyphenizer\Sdk\Exception\RequestException;
 
@@ -36,8 +38,6 @@ interface HyphenizerClientInterface
 
     /**
      * Request all existing words.
-     *
-     * @return WordsAllResponse
      */
     public function getWordsAllRequest(): WordsAllResponse;
 }
