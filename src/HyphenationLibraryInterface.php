@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace BitAndBlack\Hyphenizer\Sdk;
 
 use BitAndBlack\Hyphenizer\Sdk\Api\Word;
+use BitAndBlack\Hyphenizer\Sdk\Api\WordsAllResponse;
 use BitAndBlack\Hyphenizer\Sdk\Api\WordsResponse;
 use DateTimeInterface;
 
@@ -101,12 +102,12 @@ interface HyphenationLibraryInterface
     public function getWordDetails(string $word): array|null;
 
     /**
-     * Adds the words and their details from a {@see WordsResponse} to the hyphenation library.
+     * Adds the words and their details from a {@see WordsResponse} or a {@see WordsAllResponse} to the hyphenation library.
      * This makes use of {@see HyphenationLibraryInterface::addWordDetails()} method, which can be used to add single words, too.
      *
      * @return $this
      */
-    public function addDataFromApiWordsResponse(WordsResponse $wordsResponse, bool $saveLibrary = true): self;
+    public function addDataFromApiWordsResponse(WordsResponse|WordsAllResponse $wordsResponse, bool $saveLibrary = true): self;
 
     /**
      * Adds a word and its details to the hyphenation library.

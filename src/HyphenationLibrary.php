@@ -12,6 +12,7 @@
 namespace BitAndBlack\Hyphenizer\Sdk;
 
 use BitAndBlack\Hyphenizer\Sdk\Api\Word;
+use BitAndBlack\Hyphenizer\Sdk\Api\WordsAllResponse;
 use BitAndBlack\Hyphenizer\Sdk\Api\WordsResponse;
 use BitAndBlack\Hyphenizer\Sdk\Util\File;
 use BitAndBlack\Hyphenizer\Sdk\Util\FileInterface;
@@ -77,7 +78,7 @@ class HyphenationLibrary implements HyphenationLibraryInterface, LoggerAwareInte
     /**
      * @inheritDoc
      */
-    public function addDataFromApiWordsResponse(WordsResponse $wordsResponse, bool $saveLibrary = true): self
+    public function addDataFromApiWordsResponse(WordsResponse|WordsAllResponse $wordsResponse, bool $saveLibrary = true): self
     {
         $payload = $wordsResponse->getPayload();
         $words = $payload?->getWords() ?? [];
