@@ -16,7 +16,7 @@ namespace BitAndBlack\Hyphenizer\Sdk\Api;
 readonly class WordPayload implements PayloadInterface
 {
     /**
-     * @param array<int, Word> $word
+     * @param array<non-empty-string|int, array<int, Word>> $word
      */
     public function __construct(
         private array $word,
@@ -24,7 +24,7 @@ readonly class WordPayload implements PayloadInterface
     }
 
     /**
-     * @return array<int, Word>
+     * @return array<non-empty-string|int, array<int, Word>>
      */
     public function jsonSerialize(): array
     {
@@ -32,7 +32,7 @@ readonly class WordPayload implements PayloadInterface
     }
 
     /**
-     * @return array<int, Word>
+     * @return array<non-empty-string|int, array<int, Word>>
      */
     public function getWord(): array
     {
